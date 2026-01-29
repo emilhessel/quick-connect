@@ -18,7 +18,7 @@
     *{ box-sizing: border-box; }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--text);
       background:
         radial-gradient(1200px 700px at 15% 10%, #dbeafe 0%, transparent 60%),
@@ -36,10 +36,6 @@
       max-width: 720px;
     }
     header{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap: 16px;
       margin-bottom: 16px;
     }
     h1{
@@ -58,11 +54,9 @@
     .card{
       background: var(--card);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      overflow:hidden;
     }
     .card-inner{
       padding: 18px;
@@ -80,140 +74,64 @@
       margin:0;
       font-size: clamp(18px, 2.5vw, 22px);
       line-height: 1.35;
-      letter-spacing: -0.01em;
     }
-    .question .placeholder{
+    .placeholder{
       color: var(--muted);
       font-size: 16px;
     }
-
     .controls{
       margin-top: 14px;
       display:flex;
-      flex-wrap:wrap;
-      gap: 10px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .btn-row{
-      display:flex;
-      gap: 10px;
-      flex-wrap:wrap;
+      justify-content:flex-start;
     }
     button{
       appearance:none;
       border: 1px solid rgba(15, 23, 42, 0.12);
-      background: rgba(255,255,255,0.85);
-      color: var(--text);
+      background: #0f172a;
+      color: white;
       border-radius: 12px;
-      padding: 11px 14px;
+      padding: 12px 16px;
       font-size: 14px;
       cursor:pointer;
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
-      transition: transform 0.05s ease, box-shadow 0.15s ease, background 0.15s ease;
-      user-select:none;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.12);
+      transition: transform 0.05s ease, box-shadow 0.15s ease;
     }
     button:hover{
-      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12);
-      background: rgba(255,255,255,0.95);
+      box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16);
     }
     button:active{
       transform: translateY(1px);
       box-shadow: 0 4px 10px rgba(15, 23, 42, 0.10);
     }
-    button.primary{
-      background: #0f172a;
-      color: white;
-      border-color: rgba(255,255,255,0.16);
-    }
-    button.primary:hover{
-      background: #111c36;
-    }
-    button:disabled{
-      opacity: 0.5;
-      cursor:not-allowed;
-      transform:none;
-    }
-    .meta{
-      color: var(--muted);
-      font-size: 13px;
-      display:flex;
-      gap: 10px;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .pill{
-      border: 1px solid rgba(15, 23, 42, 0.12);
-      background: rgba(255,255,255,0.7);
-      padding: 6px 10px;
-      border-radius: 999px;
-      display:inline-flex;
-      gap: 8px;
-      align-items:center;
-    }
-    .toast{
-      position: fixed;
-      left: 50%;
-      bottom: 18px;
-      transform: translateX(-50%);
-      background: rgba(15, 23, 42, 0.92);
-      color: white;
-      padding: 10px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      opacity: 0;
-      pointer-events:none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.18);
-    }
-    .toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(-2px);
-    }
-    footer{
-      margin-top: 14px;
-      color: var(--muted);
-      font-size: 12px;
-      text-align:center;
-    }
-    a{ color: inherit; }
   </style>
 </head>
 
 <body>
   <main class="wrap">
     <header>
-      <div>
-        <h1>Quick Connect</h1>
-        <p class="sub">Click for a random question to spark a conversation. (Tip: press <b>Space</b> for a new one.)</p>
-      </div>
+      <h1>Quick Connect</h1>
+      <p class="sub">
+        Click for a random question to spark a quick, human conversation.
+        (Tip: press <b>Space</b> for a new one.)
+      </p>
     </header>
 
     <section class="card">
       <div class="card-inner">
-        <div class="question" aria-live="polite" aria-atomic="true">
-          <p id="questionText" class="placeholder">Click “Give me a question” to start.</p>
+        <div class="question" aria-live="polite">
+          <p id="questionText" class="placeholder">
+            Click “Give me a question” to start.
+          </p>
         </div>
 
         <div class="controls">
-          <div class="btn-row">
-            <button class="primary" id="nextBtn" type="button">Give me a question</button>
-          </div>
-          <div class="meta">
-            <span class="pill" id="statusPill" style="display:none;"></span>
-          </div>
+          <button id="nextBtn" type="button">Give me a question</button>
         </div>
       </div>
     </section>
-
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
   </main>
 
   <script>
-    // ============================
-    // Edit questions here
-    // ============================
     const QUESTIONS = [
       "What’s a project you’ve enjoyed working on recently, and why?",
       "What’s one skill you’d love to develop more (work-related or not)?",
@@ -240,100 +158,29 @@
       "Who’s a leader (in any field) you admire, and what would you ask them if you had coffee together?"
     ];
 
-    // ============================
-    // App logic (minimal + robust)
-    // ============================
-    const $ = (sel) => document.querySelector(sel);
-    const questionTextEl = $("#questionText");
-    const nextBtn = $("#nextBtn");
-    const copyBtn = $("#copyBtn");
-    const toastEl = $("#toast");
-    const countEl = $("#count");
-    const statusPill = $("#statusPill");
-
-    countEl.textContent = String(QUESTIONS.length);
+    const questionTextEl = document.getElementById("questionText");
+    const nextBtn = document.getElementById("nextBtn");
 
     let lastIndex = -1;
-    let currentQuestion = "";
 
-    function pickRandomIndexAvoidingLast(max, avoidIndex) {
+    function pickRandomIndex(max, avoid) {
       if (max <= 1) return 0;
-      let idx = Math.floor(Math.random() * max);
-      if (idx === avoidIndex) {
-        // one re-roll usually enough; still safe if it collides again
-        idx = (idx + 1 + Math.floor(Math.random() * (max - 1))) % max;
-      }
-      return idx;
-    }
-
-    function showToast(message) {
-      toastEl.textContent = message;
-      toastEl.classList.add("show");
-      window.clearTimeout(showToast._t);
-      showToast._t = window.setTimeout(() => toastEl.classList.remove("show"), 1400);
-    }
-
-    function setStatus(message) {
-      if (!message) {
-        statusPill.style.display = "none";
-        statusPill.textContent = "";
-        return;
-      }
-      statusPill.style.display = "inline-flex";
-      statusPill.textContent = message;
+      let i = Math.floor(Math.random() * max);
+      if (i === avoid) i = (i + 1) % max;
+      return i;
     }
 
     function showNextQuestion() {
-      const idx = pickRandomIndexAvoidingLast(QUESTIONS.length, lastIndex);
+      const idx = pickRandomIndex(QUESTIONS.length, lastIndex);
       lastIndex = idx;
-      currentQuestion = QUESTIONS[idx];
-
       questionTextEl.classList.remove("placeholder");
-      questionTextEl.textContent = currentQuestion;
-
-      copyBtn.disabled = false;
-      setStatus(""); // clear any prior status
-    }
-
-    async function copyCurrentQuestion() {
-      if (!currentQuestion) return;
-
-      try {
-        await navigator.clipboard.writeText(currentQuestion);
-        showToast("Copied!");
-        setStatus("Copied to clipboard");
-        window.setTimeout(() => setStatus(""), 1500);
-      } catch (err) {
-        // Fallback: select + copy via execCommand for older browsers
-        const ta = document.createElement("textarea");
-        ta.value = currentQuestion;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        try {
-          document.execCommand("copy");
-          showToast("Copied!");
-          setStatus("Copied to clipboard");
-          window.setTimeout(() => setStatus(""), 1500);
-        } catch (e) {
-          showToast("Copy failed");
-          setStatus("Copy failed — select manually");
-        } finally {
-          document.body.removeChild(ta);
-        }
-      }
+      questionTextEl.textContent = QUESTIONS[idx];
     }
 
     nextBtn.addEventListener("click", showNextQuestion);
-    copyBtn.addEventListener("click", copyCurrentQuestion);
 
-    // Keyboard shortcut: Space = next question (unless you're focused on a button)
     window.addEventListener("keydown", (e) => {
-      const tag = (document.activeElement && document.activeElement.tagName) || "";
-      const isButtonFocused = tag.toLowerCase() === "button";
-      if (e.code === "Space" && !isButtonFocused) {
+      if (e.code === "Space") {
         e.preventDefault();
         showNextQuestion();
       }
